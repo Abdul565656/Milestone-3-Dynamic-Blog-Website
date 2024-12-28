@@ -21,6 +21,10 @@ const BlogPost = () => {
   const [blog, setBlog] = useState<Blog | null>(null); // Use the Blog interface
   const [loading, setLoading] = useState(true);
 
+  // Comments state
+  const [comments, setComments] = useState<string[]>([]);
+  const [newComment, setNewComment] = useState<string>("");
+
   useEffect(() => {
     if (!slug || Array.isArray(slug)) {
       setLoading(false);
@@ -43,6 +47,13 @@ const BlogPost = () => {
 
     fetchBlog();
   }, [slug]);
+
+  const handleAddComment = () => {
+    if (newComment.trim() !== "") {
+      setComments((prevComments) => [...prevComments, newComment.trim()]);
+      setNewComment("");
+    }
+  };
 
   if (loading) {
     return (
@@ -97,6 +108,41 @@ const BlogPost = () => {
             ></path>
           </svg>
         </Link>
+        {/* Comments Section */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">Comments</h2>
+          {/* Comments List */}
+          <div className="space-y-4">
+            {comments.length > 0 ? (
+              comments.map((comment, index) => (
+                <div
+                  key={index}
+                  className="p-4 border border-gray-300 rounded-lg"
+                >
+                  <p className="text-gray-800">{comment}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">No comments yet. Be the first to comment!</p>
+            )}
+          </div>
+          {/* Add Comment Input */}
+          <div className="mt-6">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              rows={4}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+              placeholder="Write a comment..."
+            />
+            <button
+              onClick={handleAddComment}
+              className="mt-3 px-6 py-2 bg-green-400 text-white rounded-lg hover:bg-green-500"
+            >
+              Add Comment
+            </button>
+          </div>
+        </div>
       </div>
       <Footer />
     </div>
